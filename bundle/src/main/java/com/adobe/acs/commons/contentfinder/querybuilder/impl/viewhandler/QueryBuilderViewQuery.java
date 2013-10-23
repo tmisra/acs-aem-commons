@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -42,6 +42,11 @@ public final class QueryBuilderViewQuery implements ViewQuery {
         this.query = query;
     }
 
+    /**
+     * Executes the ContentFinder query and returns the results.
+     *
+     * @return query results in ContentFinder hit format
+     */
     @Override
     public Collection<com.day.cq.wcm.core.contentfinder.Hit> execute() {
         final List<com.day.cq.wcm.core.contentfinder.Hit> hits = new ArrayList<com.day.cq.wcm.core.contentfinder.Hit>();
@@ -53,7 +58,7 @@ public final class QueryBuilderViewQuery implements ViewQuery {
         final SearchResult result = this.query.getResult();
 
         // iterating over the results
-        for (Hit hit : result.getHits()) {
+        for (final Hit hit : result.getHits()) {
             try {
                 hits.add(createHit(hit));
             } catch (RepositoryException e) {
@@ -65,10 +70,10 @@ public final class QueryBuilderViewQuery implements ViewQuery {
     }
 
     /**
-     * ViewQuery integration
+     * Transforms the QueryBuilder hit to the ContentFinder hit.
      *
-     * @param hit
-     * @return
+     * @param hit QueryBuilder hit to transform into a ContentFinder hit
+     * @return a hit presenting a result for the ViewQuery
      * @throws javax.jcr.RepositoryException
      */
     private com.day.cq.wcm.core.contentfinder.Hit createHit(final Hit hit) throws RepositoryException {

@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -58,8 +58,18 @@ import java.util.Set;
 public final class QueryBuilderViewHandler extends ViewHandler {
     private static final Logger log = LoggerFactory.getLogger(QueryBuilderViewHandler.class);
 
+    /**
+     * Creates a ViewQuery object used to encapsulate the ContentFinder query.
+     *
+     * @param slingRequest the HTTP Request initiating the query
+     * @param session the JCR Session used to execute the query
+     * @param queryString QueryString from the request
+     * @return constructed ViewQuery from the slingRequest's payload
+     * @throws Exception
+     */
     @Override
-    protected ViewQuery createQuery(SlingHttpServletRequest slingRequest, Session session, String queryString) throws Exception {
+    protected ViewQuery createQuery(final SlingHttpServletRequest slingRequest, final Session session,
+                                    final String queryString) throws Exception {
         final ResourceResolver resolver = slingRequest.getResourceResolver();
         final QueryBuilder qb = resolver.adaptTo(QueryBuilder.class);
         Map<String, String> map;
@@ -78,13 +88,13 @@ public final class QueryBuilderViewHandler extends ViewHandler {
 
 
     /**
-     * Assume query should be treated as a QueryBuilder query, rather than a GQL query
+     * Assume query should be treated as a QueryBuilder query, rather than a GQL query.
      * <p/>
-     * This intelligently converts default Fulltext and Limit parameters to QueryBuilder equivalents
+     * This intelligently converts default Fulltext and Limit parameters to QueryBuilder equivalents.
      *
-     * @param request
-     * @param queryString
-     * @return
+     * @param request the HTTP Request initiating the query
+     * @param queryString QueryString from the request
+     * @return a QueryBuild query map
      */
     private Map<String, String> getQueryBuilderParams(final SlingHttpServletRequest request, final String queryString) {
         Map<String, String> map = new LinkedHashMap<String, String>();
@@ -93,7 +103,7 @@ public final class QueryBuilderViewHandler extends ViewHandler {
             // Skip known content finder parameters that are unused for QueryBuilder
             if (!ArrayUtils.contains(ContentFinderConstants.QUERYBUILDER_BLACKLIST, key)) {
                 final String val = request.getParameter(key);
-                if(StringUtils.isNotBlank(val)) {
+                if (StringUtils.isNotBlank(val)) {
                     map.put(key, val);
                 }
             } else {
@@ -108,7 +118,17 @@ public final class QueryBuilderViewHandler extends ViewHandler {
     }
 
 
-    private Map<String, String> convertToQueryBuilderParams(final SlingHttpServletRequest request, final String queryString) {
+    /**
+     * Converts GQL queries to QueryBuilder syntax.
+     *
+     * This is less useful as GQL can simple be executed natively via the ContentFinder implementation.
+     *
+     * @param request the HTTP Request initiating the query
+     * @param queryString QueryString from the request
+     * @return a QueryBuild query map
+     */
+    private Map<String, String> convertToQueryBuilderParams(final SlingHttpServletRequest request,
+                                                            final String queryString) {
         Map<String, String> map = new LinkedHashMap<String, String>();
 
         int userDefinedPropertyCount = 0;

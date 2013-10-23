@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,13 +31,13 @@ public class StringLengthComparator implements Comparator<String> {
     private static final Logger log = LoggerFactory.getLogger(ErrorPageHandlerImpl.class);
 
     @Override
-    public int compare(String s1, String s2) {
+    public final int compare(String s1, String s2) {
         s1 = StringUtils.stripToEmpty(s1);
         s2 = StringUtils.stripToEmpty(s2);
 
-        if(s1.length() > s2.length()) {
+        if (s1.length() > s2.length()) {
             return -1;
-        } else if(s1.length() < s2.length()) {
+        } else if (s1.length() < s2.length()) {
             return 1;
         } else {
             // Compare alphabeticaly if the same length

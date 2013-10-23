@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,15 +33,15 @@ import java.io.IOException;
  * Interface used for working with ACS-AEM-Commons forms.
  */
 public interface ForwardAsGetFormHelper extends FormHelper {
-    public final String REQUEST_ATTR_FORM_KEY = ForwardAsGetFormHelper.class.getName() + "__Form_";
+    String REQUEST_ATTR_FORM_KEY = ForwardAsGetFormHelper.class.getName() + "__Form_";
 
     /**
-     * Creates the action URL when posting to a Page (non AJAX call)
+     * Creates the action URL when posting to a Page (non AJAX call).
      *
-     * @param page
-     * @return
+     * @param page the page containing the Forms component to POST to
+     * @return the constructed action URI to the page
      */
-    public String getAction(Page page);
+    String getAction(Page page);
 
     /**
      * Creates a synthetic GET request that can be used in the context of a real
@@ -50,15 +50,15 @@ public interface ForwardAsGetFormHelper extends FormHelper {
      * This method is best used for AJAX-based forms, as the result on error is
      * only the markup associated with the error-ing form (not the whole page)
      *
-     * @param form
-     * @param resource
-     * @param request
-     * @param response
-     * @param options
+     * @param form the Form
+     * @param resource the Resource to forward the Request to
+     * @param request SlingRequest obj
+     * @param response SlingResponse obj
+     * @param options custom RequestDispatcherOptions obj
      * @throws javax.servlet.ServletException
      * @throws java.io.IOException
      */
-    public void forwardAsGet(Form form, Resource resource,
+    void forwardAsGet(Form form, Resource resource,
                              SlingHttpServletRequest request,
                              SlingHttpServletResponse response,
                              RequestDispatcherOptions options) throws ServletException, IOException;
@@ -72,14 +72,14 @@ public interface ForwardAsGetFormHelper extends FormHelper {
      *
      * Same as above, but uses empty RequestDispatcherOptions.
      *
-     * @param form
-     * @param resource
-     * @param request
-     * @param response
+     * @param form the Form
+     * @param resource the Resource to forward the Request to
+     * @param request SlingRequest obj
+     * @param response SlingResponse obj
      * @throws ServletException
      * @throws IOException
      */
-    public void forwardAsGet(Form form, Resource resource,
+    void forwardAsGet(Form form, Resource resource,
                              SlingHttpServletRequest request,
                              SlingHttpServletResponse response) throws ServletException, IOException;
 
@@ -92,32 +92,33 @@ public interface ForwardAsGetFormHelper extends FormHelper {
      *
      * Forces resourceType to "cq/Page" and removes all selectors.
      *
-     * @param form
-     * @param page
-     * @param request
-     * @param response
+     * @param form the Form
+     * @param page the CQ Page to forward the Request to
+     * @param request SlingRequest obj
+     * @param response SlingResponse obj
      * @throws ServletException
      * @throws IOException
      */
-    public void forwardAsGet(Form form, Page page,
+    void forwardAsGet(Form form, Page page,
                              SlingHttpServletRequest request,
                              SlingHttpServletResponse response) throws ServletException, IOException;
 
     /**
-     * Same as forwardAsGet(Form form, Page pae, SlingHttpServletRequest request, SlingHttpServletResponse) except allows
-     * RequestDispatcherOptions to be passed in.
+     * Same as forwardAsGet(Form form, Page pae, SlingHttpServletRequest request, SlingHttpServletResponse) except
+     * allows RequestDispatcherOptions to be passed in.
      *
-     * Note; this WILL force a resourceType of "cq/Page" even if a previous "setForceResourceType" as been set on the options.
+     * Note; this WILL force a resourceType of "cq/Page" even if a previous "setForceResourceType" as been set on the
+     * options.
      *
-     * @param form
-     * @param page
-     * @param request
-     * @param response
-     * @param options
+     * @param form the Form
+     * @param page the CQ Page to forward the Request to
+     * @param request SlingRequest obj
+     * @param response SlingResponse obj
+     * @param options custom RequestDispatcherOptions obj
      * @throws ServletException
      * @throws IOException
      */
-    public void forwardAsGet(Form form, Page page,
+    void forwardAsGet(Form form, Page page,
                              SlingHttpServletRequest request,
                              SlingHttpServletResponse response,
                              RequestDispatcherOptions options) throws ServletException, IOException;
@@ -132,15 +133,15 @@ public interface ForwardAsGetFormHelper extends FormHelper {
      *
      * Note: BrowserMap JS may auto-redirect the result is a CQ Page that loads BrowserMap.
      *
-     * @param form
-     * @param path
-     * @param request
-     * @param response
-     * @param options
+     * @param form the Form
+     * @param path the JCR Path to forward the Request to
+     * @param request SlingRequest obj
+     * @param response SlingResponse obj
+     * @param options custom RequestDispatcherOptions obj
      * @throws ServletException
      * @throws IOException
      */
-    public void forwardAsGet(Form form, String path,
+    void forwardAsGet(Form form, String path,
                              SlingHttpServletRequest request,
                              SlingHttpServletResponse response,
                              RequestDispatcherOptions options) throws ServletException, IOException;

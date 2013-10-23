@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -36,14 +36,12 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class ContentFinderHitBuilder {
-    private ContentFinderHitBuilder() {}
-    
+public final class ContentFinderHitBuilder {
     private static final int ELLIPSE_LENGTH = 3;
-    
     private static final int MAX_EXCERPT_LENGTH = 32;
-    
     private static final String DAM_THUMBNAIL = "cq5dam.thumbnail.48.48.png";
+
+    private ContentFinderHitBuilder() { }
 
     /**
      * Builds the result object that will representing a CF view record for the provided hit.
@@ -53,8 +51,8 @@ public class ContentFinderHitBuilder {
      * 2) an Asset
      * 3) Other
      *
-     * @param hit
-     * @return
+     * @param hit the QueryBuilder hit to transform into a CF hit
+     * @return a map representing the common/base attributes of all CF Hit results
      * @throws RepositoryException
      */
     public static Map<String, Object> buildGenericResult(final Hit hit) throws RepositoryException {
@@ -84,9 +82,9 @@ public class ContentFinderHitBuilder {
     /**
      * Derives and adds Page related information to the map representing the hit.
      *
-     * @param hit
-     * @param map
-     * @return
+     * @param hit the QueryBuilder hit to transform into a CF hit
+     * @param map a map of data representing the partially constructed state of the CF Hit
+     * @return a map representing a CF hit result of a CQ Page
      * @throws javax.jcr.RepositoryException
      */
     private static Map<String, Object> addPageData(final Hit hit, Map<String, Object> map) throws RepositoryException {
@@ -107,9 +105,9 @@ public class ContentFinderHitBuilder {
 
         // Excerpt
         String excerpt = hit.getExcerpt();
-        if(StringUtils.isBlank(hit.getExcerpt())) {
+        if (StringUtils.isBlank(hit.getExcerpt())) {
             excerpt = StringUtils.stripToEmpty(page.getDescription());
-            if(excerpt.length() > MAX_EXCERPT_LENGTH) {
+            if (excerpt.length() > MAX_EXCERPT_LENGTH) {
                 excerpt = StringUtils.substring(excerpt, 0, (MAX_EXCERPT_LENGTH - ELLIPSE_LENGTH)) + "...";
             }
         }
@@ -126,9 +124,9 @@ public class ContentFinderHitBuilder {
     /**
      * Derives and adds Asset related information to the map representing the hit.
      *
-     * @param hit
-     * @param map
-     * @return
+     * @param hit the QueryBuilder hit to transform into a CF hit
+     * @param map a map of data representing the partially constructed state of the CF Hit
+     * @return a map representing a CF hit result of an Asset
      * @throws javax.jcr.RepositoryException
      */
     private static Map<String, Object> addAssetData(final Hit hit, Map<String, Object> map) throws RepositoryException {
@@ -143,9 +141,9 @@ public class ContentFinderHitBuilder {
 
         // Excerpt
         String excerpt = hit.getExcerpt();
-        if(StringUtils.isBlank(hit.getExcerpt())) {
+        if (StringUtils.isBlank(hit.getExcerpt())) {
             excerpt = StringUtils.stripToEmpty(asset.getMetadataValue(DamConstants.DC_DESCRIPTION));
-            if(excerpt.length() > MAX_EXCERPT_LENGTH) {
+            if (excerpt.length() > MAX_EXCERPT_LENGTH) {
                 excerpt = StringUtils.substring(excerpt, 0, (MAX_EXCERPT_LENGTH - ELLIPSE_LENGTH)) + "...";
             }
         }
@@ -165,12 +163,13 @@ public class ContentFinderHitBuilder {
     /**
      * Derives and adds Other (non-Page, non-Asset) related information to the map representing the hit.
      *
-     * @param hit
-     * @param map
-     * @return
+     * @param hit the QueryBuilder hit to transform into a CF hit
+     * @param map a map of data representing the partially constructed state of the CF Hit
+     * @return a map representing a CF hit result of a non-Page and non-Asset
      * @throws javax.jcr.RepositoryException
      */
-    private static Map<String, Object> addOtherData(final Hit hit, Map<String, Object> map) throws RepositoryException {
+    private static Map<String, Object> addOtherData(final Hit hit,
+                                                    final Map<String, Object> map) throws RepositoryException {
         final Resource resource = hit.getResource();
 
         map.put("title", resource.getName());
@@ -182,10 +181,10 @@ public class ContentFinderHitBuilder {
     }
 
     /**
-     * Get the last modified date for an Asset
+     * Get the last modified date for an Asset.
      *
-     * @param asset
-     * @return
+     * @param asset the asset to get the last modified date for
+     * @return the last modified date of the asset
      */
     private static long getLastModified(final Asset asset) {
         if (asset.getLastModified() > 0L) {
@@ -204,8 +203,8 @@ public class ContentFinderHitBuilder {
     /**
      * Get the last modified date for a Page.
      *
-     * @param page
-     * @return
+     * @param page the page to get the last modified date for
+     * @return the last modified date of the page
      */
     private static long getLastModified(final Page page) {
         if (page.getLastModified() != null) {
@@ -224,8 +223,8 @@ public class ContentFinderHitBuilder {
     /**
      * Get the last modified date for a generic resource.
      *
-     * @param resource
-     * @return
+     * @param resource the resource to get the last modified date for
+     * @return the last modified date of the resource
      */
     private static long getLastModified(final Resource resource) {
         final ValueMap properties = resource.adaptTo(ValueMap.class);
@@ -246,8 +245,8 @@ public class ContentFinderHitBuilder {
     /**
      * Get the size of the Asset (the original rendition).
      *
-     * @param asset
-     * @return
+     * @param asset the asset to get the size of
+     * @return the size of the asset in bytes
      */
     private static long getSize(final Asset asset) {
         final Rendition original = asset.getOriginal();
@@ -261,16 +260,17 @@ public class ContentFinderHitBuilder {
     /**
      * Get the timestamp for the last change to the thumbnail.
      *
-     * @param asset
-     * @return
+     * @param asset the asset associated w the thumbnail.
+     * @return the last modified timestamp
      */
     private static long getCK(final Asset asset) {
+        final long ckDivisor = 1000 * 1000;
         try {
             Resource resource = asset.getRendition(DAM_THUMBNAIL);
             Resource contentResource = resource.getChild(JcrConstants.JCR_CONTENT);
             ValueMap properties = contentResource.adaptTo(ValueMap.class);
 
-            return properties.get(JcrConstants.JCR_LASTMODIFIED, 0L) / 1000 * 1000;
+            return properties.get(JcrConstants.JCR_LASTMODIFIED, 0L) / ckDivisor;
         } catch (Exception ex) {
             return 0L;
         }

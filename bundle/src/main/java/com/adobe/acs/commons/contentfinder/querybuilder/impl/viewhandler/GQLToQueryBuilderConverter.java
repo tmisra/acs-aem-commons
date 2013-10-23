@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -66,17 +66,31 @@ public final class GQLToQueryBuilderConverter {
     public static final int DEFAULT_LIMIT = ContentFinderConstants.DEFAULT_LIMIT;
 
     /**
-     * Checks if request forces QueryBuilder mode
-     *
-     * @param request
-     * @return
+     * Private constructor.
      */
-    public static boolean convertToQueryBuilder(final SlingHttpServletRequest request) {
-        return (has(request, ContentFinderConstants.CONVERT_TO_QUERYBUILDER_KEY) &&
-                ContentFinderConstants.CONVERT_TO_QUERYBUILDER_VALUE.equals(get(request, ContentFinderConstants.CONVERT_TO_QUERYBUILDER_KEY)));
+    private GQLToQueryBuilderConverter() {
+        // Prevent instantiation
     }
 
+    /**
+     * Checks if request forces QueryBuilder mode.
+     *
+     * @param request the HTTP Request initiating the query
+     * @return true is the request should be converted form GQL to QueryBuilder syntax
+     */
+    public static boolean convertToQueryBuilder(final SlingHttpServletRequest request) {
+        return (has(request, ContentFinderConstants.CONVERT_TO_QUERYBUILDER_KEY)
+                && ContentFinderConstants.CONVERT_TO_QUERYBUILDER_VALUE.equals(get(request,
+                ContentFinderConstants.CONVERT_TO_QUERYBUILDER_KEY)));
+    }
 
+    /**
+     * Adds a Path predicate to the QueryBuilder query definition .
+     *
+     * @param request the HTTP Request initiating the query
+     * @param map map with previous QueryBuilder query definitions
+     * @return a QueryBuild query map
+     */
     public static Map<String, String> addPath(final SlingHttpServletRequest request, Map<String, String> map) {
         if (has(request, CF_PATH)) {
             map = put(request, map, CF_PATH, GROUP_PATH, true);
@@ -87,6 +101,13 @@ public final class GQLToQueryBuilderConverter {
         return map;
     }
 
+    /**
+     * Adds a nodeType predicate to the QueryBuilder query definition.
+     *
+     * @param request the HTTP Request initiating the query
+     * @param map map with previous QueryBuilder query definitions
+     * @return a QueryBuild query map
+     */
     public static Map<String, String> addType(final SlingHttpServletRequest request, Map<String, String> map) {
         if (has(request, CF_TYPE)) {
             map = put(request, map, CF_TYPE, GROUP_TYPE, true);
@@ -95,6 +116,13 @@ public final class GQLToQueryBuilderConverter {
         return map;
     }
 
+    /**
+     * Adds a nodename predicate to the QueryBuilder query definition.
+     *
+     * @param request the HTTP Request initiating the query
+     * @param map map with previous QueryBuilder query definitions
+     * @return a QueryBuild query map
+     */
     public static Map<String, String> addName(final SlingHttpServletRequest request, Map<String, String> map) {
         if (has(request, CF_NAME)) {
             map = put(request, map, CF_NAME, "nodename", GROUP_NAME, true);
@@ -103,7 +131,16 @@ public final class GQLToQueryBuilderConverter {
         return map;
     }
 
-    public static Map<String, String> addOrder(final SlingHttpServletRequest request, Map<String, String> map, final String queryString) {
+    /**
+     * Adds a order predicate to the QueryBuilder query definition.
+     *
+     * @param request the HTTP Request initiating the query
+     * @param map map with previous QueryBuilder query definitions
+     * @param queryString
+     * @return a QueryBuild query map
+     */
+    public static Map<String, String> addOrder(final SlingHttpServletRequest request, Map<String, String> map,
+                                               final String queryString) {
         if (has(request, CF_ORDER)) {
 
             int count = 1;
@@ -152,6 +189,13 @@ public final class GQLToQueryBuilderConverter {
     }
 
 
+    /**
+     * Adds a mimeType-based property predicate to the QueryBuilder query definition.
+     *
+     * @param request the HTTP Request initiating the query
+     * @param map map with previous QueryBuilder query definitions
+     * @return a QueryBuild query map
+     */
     public static Map<String, String> addMimeType(final SlingHttpServletRequest request, Map<String, String> map) {
         final boolean isAsset = isAsset(get(request, CF_TYPE));
         final String prefix = getPropertyPrefix(request);
@@ -166,6 +210,13 @@ public final class GQLToQueryBuilderConverter {
     }
 
 
+    /**
+     * Adds a tag predicate to the QueryBuilder query definition.
+     *
+     * @param request the HTTP Request initiating the query
+     * @param map map with previous QueryBuilder query definitions
+     * @return a QueryBuild query map
+     */
     public static Map<String, String> addTags(final SlingHttpServletRequest request, Map<String, String> map) {
         if (has(request, CF_TAGS)) {
             final String prefix = getPropertyPrefix(request);
@@ -194,7 +245,14 @@ public final class GQLToQueryBuilderConverter {
         return map;
     }
 
-
+    /**
+     * Adds fulltext predicate to the QueryBuilder query definition.
+     *
+     * @param request the HTTP Request initiating the query
+     * @param map map with previous QueryBuilder query definitions
+     * @param queryString value to fulltext search for
+     * @return a QueryBuild query map
+     */
     public static Map<String, String> addFulltext(final SlingHttpServletRequest request,
                                                   Map<String, String> map, final String queryString) {
         if (StringUtils.isNotBlank(queryString)) {
@@ -206,7 +264,15 @@ public final class GQLToQueryBuilderConverter {
         return map;
     }
 
-    public static Map<String, String> addLimitAndOffset(final SlingHttpServletRequest request, Map<String, String> map) {
+    /**
+     * Adds limit and offset predicates to the QueryBuilder query definition.
+     *
+     * @param request the HTTP Request initiating the query
+     * @param map map with previous QueryBuilder query definitions
+     * @return a QueryBuild query map
+     */
+    public static Map<String, String> addLimitAndOffset(final SlingHttpServletRequest request,
+                                                        final Map<String, String> map) {
         if (has(request, CF_LIMIT)) {
             // Both limits and offsets are computed from CF's limit field X..Y
             final String offset = String.valueOf(getOffset(request));
@@ -222,9 +288,20 @@ public final class GQLToQueryBuilderConverter {
     }
 
 
-    public static Map<String, String> addProperty(final SlingHttpServletRequest request, Map<String, String> map, final String requestKey, final int count) {
+    /**
+     * Adds property predicate to the QueryBuilder query definition.
+     *
+     * @param request the HTTP Request initiating the query
+     * @param map map with previous QueryBuilder query definitions
+     * @param requestKey key of request attribute whose value it to be used
+     * @param count count used to create unique GroupIDs; typically incremented by caller
+     * @return
+     */
+    public static Map<String, String> addProperty(final SlingHttpServletRequest request, Map<String, String> map,
+                                                  final String requestKey, final int count) {
         if (!ArrayUtils.contains(ContentFinderConstants.PROPERTY_BLACKLIST, requestKey)) {
-            map = putProperty(request, map, requestKey, JcrPropertyPredicateEvaluator.PROPERTY, (GROUP_PROPERTY_USERDEFINED + count), true);
+            map = putProperty(request, map, requestKey, JcrPropertyPredicateEvaluator.PROPERTY,
+                    (GROUP_PROPERTY_USERDEFINED + count), true);
         } else {
             log.debug("Rejecting property [ {} ] due to blacklist match", requestKey);
         }
@@ -232,16 +309,22 @@ public final class GQLToQueryBuilderConverter {
     }
 
 
+    /**
+     * Used to determine if a request parameter key should be ignored (system properties).
+     *
+     * @param key the key to evaluate against the blacklist
+     * @return true is value is in the property blacklist
+     */
     public static boolean isValidProperty(final String key) {
         return (!ArrayUtils.contains(ContentFinderConstants.PROPERTY_BLACKLIST, key));
     }
 
     /**
-     * Checks if the provided key has more than 1 values (comma delimited)
+     * Checks if the provided key has more than 1 values (comma delimited).
      *
-     * @param request
-     * @param key
-     * @return
+     * @param request the HTTP Request initiating the query
+     * @param key the request parameter key
+     * @return true is key has more than 1 value
      */
     public static boolean hasMany(SlingHttpServletRequest request, String key) {
         final RequestParameter rp = request.getRequestParameter(key);
@@ -252,33 +335,33 @@ public final class GQLToQueryBuilderConverter {
     }
 
     /**
-     * Checks if the provided key has ANY values (1 or more)
+     * Checks if the provided key has ANY values (1 or more).
      *
-     * @param request
-     * @param key
-     * @return
+     * @param request the HTTP Request initiating the query
+     * @param key the request parameter key
+     * @return true is key has 1 or more values
      */
     public static boolean has(SlingHttpServletRequest request, String key) {
         return request.getParameterValues(key) != null;
     }
 
     /**
-     * Returns a single value for a query parameter key
+     * Returns a single value for a query parameter key.
      *
-     * @param request
-     * @param key
-     * @return
+     * @param request the HTTP Request initiating the query
+     * @param key the request parameter key
+     * @return the value trimmed of white-space
      */
     public static String get(SlingHttpServletRequest request, String key) {
         return StringUtils.trim(request.getRequestParameter(key).toString());
     }
 
     /**
-     * Returns a String array from a comma delimited list of values
+     * Returns a String array from a comma delimited list of values.
      *
-     * @param request
-     * @param key
-     * @return
+     * @param request the HTTP Request initiating the query
+     * @param key the request parameter key
+     * @return String array from a comma delimited list of values
      */
     public static String[] getAll(SlingHttpServletRequest request, String key) {
         final RequestParameter rp = request.getRequestParameter(key);
@@ -289,51 +372,66 @@ public final class GQLToQueryBuilderConverter {
     }
 
     /**
-     * Convenience wrapper
+     * Convenience wrapper.
      *
-     * @param request
-     * @param map
-     * @param predicate
-     * @param group
-     * @param or
-     * @return
+     * @param request the HTTP Request initiating the query
+     * @param map             => map with previous QueryBuilder query definitions
+     * @param predicate       => property
+     * @param group           => ID
+     * @param or              => true/false
+     * @return a QueryBuild query map
      */
-    public static Map<String, String> put(SlingHttpServletRequest request, Map<String, String> map, String predicate, int group, boolean or) {
+    public static Map<String, String> put(final SlingHttpServletRequest request, final Map<String, String> map,
+                                          final String predicate, final int group, final boolean or) {
         return putAll(map, predicate, getAll(request, predicate), group, or);
     }
 
-    public static Map<String, String> put(SlingHttpServletRequest request, Map<String, String> map, String requestKey, String predicate, int group, boolean or) {
+    /**
+     *
+     * @param request the HTTP Request initiating the query
+     * @param map             => map with previous QueryBuilder query definitions
+     * @param requestKey      => The key used to look up value in request
+     * @param predicate       => property
+     * @param group           => ID
+     * @param or              => true/false
+     * @return a QueryBuild query map
+     */
+    public static Map<String, String> put(final SlingHttpServletRequest request, final Map<String, String> map,
+                                          final String requestKey, final String predicate, final int group,
+                                          final boolean or) {
         return putAll(map, predicate, getAll(request, requestKey), group, or);
     }
 
     /**
-     * Used when the request key is different from the Predicate
+     * Used when the request key is different from the Predicate.
      *
-     * @param request
-     * @param map
-     * @param requestKey
-     * @param predicate
-     * @param group
-     * @param or
-     * @return
+     * @param request the HTTP Request initiating the query
+     * @param map             => map with previous QueryBuilder query definitions
+     * @param requestKey      => The key used to look up value in request
+     * @param predicate       => property
+     * @param group           => ID
+     * @param or              => true/false
+     * @return a QueryBuild query map
      */
-    public static Map<String, String> putProperty(SlingHttpServletRequest request, Map<String, String> map, String requestKey, String predicate, int group, boolean or) {
-        // putAll(map, "property", "jcr:titke", "value", [x,y,z], 10, true)
-        return putAll(map, predicate, requestKey, JcrPropertyPredicateEvaluator.VALUE, getAll(request, requestKey), group, or);
+    public static Map<String, String> putProperty(final SlingHttpServletRequest request, final Map<String,
+            String> map, final String requestKey, final String predicate, final int group, final boolean or) {
+        // putAll(map, "property", "jcr:title", "value", [x,y,z], 10, true)
+        return putAll(map, predicate, requestKey, JcrPropertyPredicateEvaluator.VALUE,
+                getAll(request, requestKey), group, or);
     }
 
-
     /**
-     * Helper method for adding comma delimited values into a Query Builder predicate
+     * Helper method for adding comma delimited values into a Query Builder predicate.
      *
-     * @param map
-     * @param predicate
-     * @param values
-     * @param group
-     * @param or
-     * @return
+     * @param map             => map with previous QueryBuilder query definitions
+     * @param predicate       => property
+     * @param values          => [Square, Triangle]
+     * @param group           => ID
+     * @param or              => true/false
+     * @return a QueryBuild query map
      */
-    public static Map<String, String> putAll(Map<String, String> map, String predicate, String[] values, int group, boolean or) {
+    public static Map<String, String> putAll(final Map<String, String> map, final String predicate,
+                                             final String[] values, final int group, final boolean or) {
         final String groupId = String.valueOf(group) + "_group";
         int count = 1;
 
@@ -349,18 +447,21 @@ public final class GQLToQueryBuilderConverter {
         return map;
     }
 
-
     /**
-     * @param map
+     * Creates map representing a QueryBuilder query.
+     *
+     * @param map             => map with previous QueryBuilder query definitions
      * @param predicateValue  => jcr:title
      * @param predicate       => property
      * @param predicateSuffix => value
      * @param values          => [Square, Triangle]
      * @param group           => ID
      * @param or              => true/false
-     * @return
+     * @return a QueryBuild query map
      */
-    public static Map<String, String> putAll(Map<String, String> map, String predicate, String predicateValue, String predicateSuffix, String[] values, int group, boolean or) {
+    public static Map<String, String> putAll(final Map<String, String> map, final String predicate,
+                                             final String predicateValue, final String predicateSuffix,
+                                             final String[] values, final int group, boolean or) {
         final String groupId = String.valueOf(group) + "_group";
 
         map.put(groupId + "." + predicate, predicateValue);
@@ -378,27 +479,32 @@ public final class GQLToQueryBuilderConverter {
         return map;
     }
 
-
     /**
-     * Checks of the query param node type is that of a CQ Page
+     * Checks of the query param node type is that of a CQ Page.
      *
-     * @param nodeType
-     * @return
+     * @param nodeType value of the node type (jcr:PrimaryType)
+     * @return true is the nodeType is that of a CQ Page
      */
-    public static boolean isPage(String nodeType) {
+    public static boolean isPage(final String nodeType) {
         return StringUtils.equals(nodeType, "cq:Page");
     }
 
     /**
-     * Checks of the query param node type is that of a DAM Asset
+     * Checks of the query param node type is that of a DAM Asset.
      *
-     * @param nodeType
-     * @return
+     * @param nodeType value of the node type (jcr:PrimaryType)
+     * @return true is the nodeType is that of an Asset
      */
-    public static boolean isAsset(String nodeType) {
+    public static boolean isAsset(final String nodeType) {
         return StringUtils.equals(nodeType, "dam:Asset");
     }
 
+    /**
+     * Determines path prefix for the resource depending on if its a CQ Page or DAM Asset.
+     *
+     * @param request the HTTP Request initiating the query
+     * @return the path prefix for the resource
+     */
     public static String getPropertyPrefix(final SlingHttpServletRequest request) {
         final boolean isPage = isPage(get(request, CF_TYPE));
         final boolean isAsset = isAsset(get(request, CF_TYPE));
@@ -414,10 +520,10 @@ public final class GQLToQueryBuilderConverter {
     }
 
     /**
-     * Extract the query limit from the ContentFinder Query Parameter notation
+     * Extract the query limit from the ContentFinder Query Parameter notation.
      *
-     * @param request
-     * @return
+     * @param request the HTTP Request initiating the query
+     * @return the query limit
      */
     public static int getLimit(final SlingHttpServletRequest request) {
         if (has(request, CF_LIMIT)) {
@@ -444,10 +550,10 @@ public final class GQLToQueryBuilderConverter {
     }
 
     /**
-     * Extract the query offset from the ContentFinder Query Parameter notation
+     * Extract the query offset from the ContentFinder Query Parameter notation.
      *
-     * @param request
-     * @return
+     * @param request the HTTP Request initiating the query
+     * @return the query offset
      */
     public static int getOffset(final SlingHttpServletRequest request) {
         if (has(request, CF_LIMIT)) {

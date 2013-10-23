@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,12 +19,10 @@
  */
 package com.adobe.acs.commons.designer.impl;
 
-import java.io.IOException;
-import java.io.Writer;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-
+import com.adobe.acs.commons.designer.DesignHtmlLibraryManager;
+import com.adobe.acs.commons.designer.PageRegion;
+import com.day.cq.wcm.api.designer.Design;
+import com.day.cq.widget.HtmlLibraryManager;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
@@ -34,13 +32,14 @@ import org.apache.sling.api.wrappers.ValueMapDecorator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.adobe.acs.commons.designer.DesignHtmlLibraryManager;
-import com.adobe.acs.commons.designer.PageRegion;
-import com.day.cq.wcm.api.designer.Design;
-import com.day.cq.widget.HtmlLibraryManager;
+import java.io.IOException;
+import java.io.Writer;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
 
 @Component(
-        label = "ACS Commons - Design HTML Library Manager",
+        label = "ACS AEM Commons - Design HTML Library Manager",
         description = "Helper service used to expose configured Design-specific client libraries in JSPs.",
         metatype = false,
         immediate = false)
@@ -96,8 +95,8 @@ public final class DesignHtmlLibraryManagerImpl implements DesignHtmlLibraryMana
     /**
      * Gets the ValueMap that contains the client library lists for the specified design and PageRegion.
      *
-     * @param design
-     * @param pageRegion
+     * @param design the Design to look up the associated client libraries (usually the Page's design)
+     * @param pageRegion the set of client libraries to loo up
      * @return the ValueMap associated with the PageRegion;
      *         CSS and JS libraries can be looked up via PROPERTY_CSS and PROPERTY_JS
      */

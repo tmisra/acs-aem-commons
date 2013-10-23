@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,11 +28,11 @@ import org.apache.sling.commons.json.JSONException;
 import java.io.IOException;
 
 public interface PostRedirectGetFormHelper extends FormHelper {
-    public final static String KEY_FORM_NAME = "n";
-    public final static String KEY_FORM = "f";
-    public final static String KEY_ERRORS = "e";
-    public final static String KEY_PREFIX_FORM_NAME = "f_";
-    public final static String QUERY_PARAM_FORM_SELECTOR = "f_selector";
+    String KEY_FORM_NAME = "n";
+    String KEY_FORM = "f";
+    String KEY_ERRORS = "e";
+    String KEY_PREFIX_FORM_NAME = "f_";
+    String QUERY_PARAM_FORM_SELECTOR = "f_selector";
 
     /**
      * Issues a 302 redirect with the form serialized into a JSON object that can be
@@ -40,13 +40,14 @@ public interface PostRedirectGetFormHelper extends FormHelper {
      *
      * Allows 302 redirect to target the specified path.
      *
-     * @param form
-     * @param path
-     * @param response
+     * @param form the Form
+     * @param path the JCR Path to redirect to
+     * @param response SlingResponse obj
      * @throws IOException
      * @throws JSONException
      */
-    public void sendRedirect(Form form, String path, SlingHttpServletResponse response) throws IOException, JSONException;
+    void sendRedirect(Form form, String path, SlingHttpServletResponse response)
+            throws IOException, JSONException;
 
     /**
      * Issues a 302 redirect with the form serialized into a JSON object that can be
@@ -54,13 +55,14 @@ public interface PostRedirectGetFormHelper extends FormHelper {
      *
      * Allows 302 redirect to target the specified CQ Page.
      *
-     * @param form
-     * @param page
-     * @param response
+     * @param form the Form
+     * @param page the CQ Page to redirect to
+     * @param response SlingResponse obj
      * @throws IOException
      * @throws JSONException
      */
-    public void sendRedirect(Form form, Page page, SlingHttpServletResponse response) throws IOException, JSONException;
+    void sendRedirect(Form form, Page page, SlingHttpServletResponse response)
+            throws IOException, JSONException;
 
     /**
      /**
@@ -69,14 +71,14 @@ public interface PostRedirectGetFormHelper extends FormHelper {
      *
      * Allows 302 redirect to target the specified resource with provided .html extension.
      *
-     * @param form
-     * @param resource
-     * @param response
+     * @param form the Form
+     * @param resource the Resource to redirect to
+     * @param response SlingResponse obj
      * @throws IOException
      * @throws JSONException
      */
-    public void sendRedirect(Form form, Resource resource, SlingHttpServletResponse response) throws IOException, JSONException;
-
+    void sendRedirect(Form form, Resource resource, SlingHttpServletResponse response)
+            throws IOException, JSONException;
 
     /**
      * Same as:
@@ -85,14 +87,16 @@ public interface PostRedirectGetFormHelper extends FormHelper {
      *
      * but adds the Form selector query parameter to redirect request.
      *
-     * @param form
-     * @param path
-     * @param formSelector
-     * @param response
+     * @param form the Form
+     * @param path the JCR Path to redirect to
+     * @param formSelector a Sling Selector used to identify a specific script associated w the resource type on the
+     *                     path's resource.
+     * @param response SlingResponse obj
      * @throws IOException
      * @throws JSONException
      */
-    public void sendRedirect(Form form, String path, String formSelector, SlingHttpServletResponse response) throws IOException, JSONException;
+    void sendRedirect(Form form, String path, String formSelector, SlingHttpServletResponse response)
+            throws IOException, JSONException;
 
     /**
      * Same as:
@@ -101,14 +105,16 @@ public interface PostRedirectGetFormHelper extends FormHelper {
      *
      * but adds the Form selector query parameter to redirect request.
      *
-     * @param form
-     * @param page
-     * @param formSelector
-     * @param response
+     * @param form the Form
+     * @param page the CQ Page to redirect to
+     * @param formSelector a Sling Selector used to identify a specific script associated w the Form resource type
+     *                     on the page
+     * @param response SlingResponse obj
      * @throws IOException
      * @throws JSONException
      */
-    public void sendRedirect(Form form, Page page, String formSelector, SlingHttpServletResponse response) throws IOException, JSONException;
+    void sendRedirect(Form form, Page page, String formSelector, SlingHttpServletResponse response)
+            throws IOException, JSONException;
 
     /**
      * Same as:
@@ -117,12 +123,14 @@ public interface PostRedirectGetFormHelper extends FormHelper {
      *
      * but adds the Form selector query parameter to redirect request.
      *
-     * @param form
-     * @param resource
-     * @param formSelector
-     * @param response
+     * @param form the Form
+     * @param resource the Resource to redirect to
+     * @param formSelector a Sling Selector used to identify a specific script associated w the resource type on the
+     *                    @resource.
+     * @param response SlingResponse obj
      * @throws IOException
      * @throws JSONException
      */
-    public void sendRedirect(Form form, Resource resource, String formSelector, SlingHttpServletResponse response) throws IOException, JSONException;
+    void sendRedirect(Form form, Resource resource, String formSelector, SlingHttpServletResponse response)
+            throws IOException, JSONException;
 }
