@@ -1,6 +1,7 @@
 package com.adobe.acs.commons.workflow.reauthentication.impl;
 
 import com.adobe.acs.commons.workflow.reauthentication.FingerprintService;
+import com.day.cq.workflow.exec.WorkItem;
 import org.apache.commons.lang.StringUtils;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.sling.SlingFilter;
@@ -51,9 +52,11 @@ public class DialogParticipantInterceptorFilterImpl implements javax.servlet.Fil
 
         final String userId = slingRequest.getResourceResolver().getUserID();
         final String password = slingRequest.getRequestParameter("password").getString();
+        final String item = slingRequest.getRequestParameter("item").getString();
 
         if(fingerprintService.isValidCredentials(userId, password)) {
-            fingerprintService.writeFingerprint(userId, this.getWorkItemPath(slingRequest));
+            final WorkItem workItem = fingerprintService.getWorkItemFromPath(item);
+            fingerprintService.writeFingerprint(userId, workItem.getWorkflow());
         }
 
         filterChain.doFilter(servletRequest, servletResponse);
@@ -84,22 +87,12 @@ public class DialogParticipantInterceptorFilterImpl implements javax.servlet.Fil
             return false;
         }
 
-        if(this.getWorkItemPath(slingRequest) == null) {
+        if(!slingRequest.getRequestParameterMap().keySet().contains("item")) {
+            log.debug("NO ITEM KEY");
             return false;
         }
 
         return true;
-    }
-
-    private String getWorkItemPath(final SlingHttpServletRequest slingRequest) {
-
-        for(final String key : slingRequest.getRequestParameterMap().keySet()) {
-            if(StringUtils.startsWith(key, "route-"))  {
-                return StringUtils.stripToNull(StringUtils.removeStart(key, "route-"));
-            }
-        }
-
-        return null;
     }
 }
 

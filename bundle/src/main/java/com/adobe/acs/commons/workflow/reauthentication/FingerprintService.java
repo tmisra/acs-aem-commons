@@ -1,16 +1,29 @@
 package com.adobe.acs.commons.workflow.reauthentication;
 
+
 import com.day.cq.workflow.exec.WorkItem;
+import com.day.cq.workflow.exec.Workflow;
+
+import java.io.UnsupportedEncodingException;
 
 public interface FingerprintService {
-    public static String PN_FINGERPRINTER = "userId";
+    public static String PN_FINGERPRINTER = "fingerprinter";
     public static String PN_FINGERPRINT = "fingerprint";
 
     public boolean isValidCredentials(String userId, String password);
 
-    public void writeFingerprint(String userId, String workItemPath);
+    public void writeFingerprint(String userId, Workflow workflow) throws UnsupportedEncodingException;
 
-    public boolean hasValidFingerprint(WorkItem workItem);
+    public void clearFingerprint(Workflow workflow);
 
-    public boolean isValidFingerprint(String fingerprint, String userId, String workItemPath);
+    public boolean hasValidFingerprint(Workflow workflow);
+
+    public boolean isValidFingerprint(String userId, String fingerprint, Workflow workflow);
+
+    public WorkItem getWorkItemFromPath(String workItemPath);
+
+    public void recordSuccess(WorkItem workItem);
+
+    public void recordFailure(WorkItem workItem);
+
 }
