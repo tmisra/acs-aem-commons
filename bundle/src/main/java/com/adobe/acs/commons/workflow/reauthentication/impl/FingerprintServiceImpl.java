@@ -72,7 +72,7 @@ public class FingerprintServiceImpl implements FingerprintService {
     @Override
     public boolean hasValidFingerprint(final Workflow workflow) {
 
-        final MetaDataMap map = workflow.getWorkflowData().getMetaDataMap();
+        final MetaDataMap map = workflow.getMetaDataMap();
         final String userId = map.get(PN_FINGERPRINTER, "");
         final String fingerprint = map.get(PN_FINGERPRINT, "");
 
@@ -117,11 +117,13 @@ public class FingerprintServiceImpl implements FingerprintService {
     @Override
     public void recordSuccess(final WorkItem workItem) {
         log.info("Fingerprint was successfully validated for: {}", workItem);
+        workItem.getMetaDataMap().put("fingerprinted", "true");
     }
 
     @Override
     public void recordFailure(WorkItem workItem) {
         log.info("Fingerprint was unable to be validated for: {}", workItem);
+        workItem.getMetaDataMap().put("fingerprinted", "false");
     }
 
     private void setFingerprint(final String userId, final String fingerprint, final Workflow workflow) {
@@ -130,7 +132,7 @@ public class FingerprintServiceImpl implements FingerprintService {
         try {
             adminSession = slingRepository.loginAdministrative(null);
 
-            final Node node = adminSession.getNode(workflow.getId() + "/data/metaData");
+            final Node node = adminSession.getNode(workflow.getId() + "/metaData");
 
             JcrUtil.setProperty(node, PN_FINGERPRINTER, userId);
             JcrUtil.setProperty(node, PN_FINGERPRINT, fingerprint);
@@ -146,8 +148,7 @@ public class FingerprintServiceImpl implements FingerprintService {
         }
     }
 
-
     private String makeFingerprint(final String userId, final Workflow workflow) throws UnsupportedEncodingException {
-        return Text.md5(SECRET + "@" + userId + "@" + workflow.getId(), "UTF-8");
+        return Text.md5(SECRET + "||" + userId + "||" + workflow.getId(), "UTF-8");
     }
 }

@@ -5,8 +5,9 @@
         <password
             jcr:primaryType="cq:Widget"
             fieldLabel="Password"
-            name="password"
-            xtype="textfield"/>
+            fieldDescription="Confirm your identity by providing your AEM password."
+            name="./jcr:content/hidden:password"
+            xtype="password"/>
     </items>
 </jcr:root>
 

@@ -25,6 +25,10 @@ import java.io.IOException;
         scope = SlingFilterScope.REQUEST)
 public class DialogParticipantInterceptorFilterImpl implements javax.servlet.Filter {
     private static final Logger log = LoggerFactory.getLogger(DialogParticipantInterceptorFilterImpl.class);
+    private static final String RP_PASSWORD = "./jcr:content/hidden:password";
+    private static final String RP_ITEM = "item";
+    private static final String RP_CMD = "cmd";
+
 
     @Reference
     private FingerprintService fingerprintService;
@@ -51,8 +55,8 @@ public class DialogParticipantInterceptorFilterImpl implements javax.servlet.Fil
         /** ACCEPTED **/
 
         final String userId = slingRequest.getResourceResolver().getUserID();
-        final String password = slingRequest.getRequestParameter("password").getString();
-        final String item = slingRequest.getRequestParameter("item").getString();
+        final String password = slingRequest.getRequestParameter(RP_PASSWORD).getString();
+        final String item = slingRequest.getRequestParameter(RP_ITEM).getString();
 
         if(fingerprintService.isValidCredentials(userId, password)) {
             final WorkItem workItem = fingerprintService.getWorkItemFromPath(item);
@@ -79,16 +83,16 @@ public class DialogParticipantInterceptorFilterImpl implements javax.servlet.Fil
             return false;
         }
 
-        if(!slingRequest.getRequestParameterMap().keySet().contains("cmd")) {
+        if(!slingRequest.getRequestParameterMap().keySet().contains(RP_CMD)) {
             return false;
         }
 
-        if(!slingRequest.getRequestParameterMap().keySet().contains("password")) {
+        if(!slingRequest.getRequestParameterMap().keySet().contains(RP_PASSWORD)) {
+            log.debug("No password field of: {}", RP_PASSWORD);
             return false;
         }
 
-        if(!slingRequest.getRequestParameterMap().keySet().contains("item")) {
-            log.debug("NO ITEM KEY");
+        if(!slingRequest.getRequestParameterMap().keySet().contains(RP_ITEM)) {
             return false;
         }
 
