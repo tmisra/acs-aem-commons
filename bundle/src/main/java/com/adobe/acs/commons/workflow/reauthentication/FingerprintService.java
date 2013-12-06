@@ -22,8 +22,8 @@ public interface FingerprintService {
 
     public WorkItem getWorkItemFromPath(String workItemPath);
 
-    public void recordSuccess(WorkItem workItem);
+    public void recordSuccess(String userId, WorkItem workItem);
 
-    public void recordFailure(WorkItem workItem);
+    public void recordFailure(String userId, WorkItem workItem);
 
 }

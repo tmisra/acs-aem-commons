@@ -52,7 +52,7 @@ public class FingerprintServiceImpl implements FingerprintService {
             log.error(e.getMessage());
             return false;
         } finally {
-            if(passwordValidationSession != null) {
+            if (passwordValidationSession != null) {
                 passwordValidationSession.logout();
             }
         }
@@ -81,7 +81,7 @@ public class FingerprintServiceImpl implements FingerprintService {
 
     @Override
     public boolean isValidFingerprint(final String userId, final String fingerprint, final Workflow workflow) {
-        if(StringUtils.isBlank(userId) || StringUtils.isBlank(fingerprint)) {
+        if (StringUtils.isBlank(userId) || StringUtils.isBlank(fingerprint)) {
             return false;
         }
 
@@ -108,22 +108,22 @@ public class FingerprintServiceImpl implements FingerprintService {
             log.error("Error logging in as admin to check to get Work Item");
             return null;
         } finally {
-            if(adminResourceResolver != null) {
+            if (adminResourceResolver != null) {
                 adminResourceResolver.close();
             }
         }
     }
 
     @Override
-    public void recordSuccess(final WorkItem workItem) {
-        log.info("Fingerprint was successfully validated for: {}", workItem);
-        workItem.getMetaDataMap().put("fingerprinted", "true");
+    public void recordSuccess(final String userId, final WorkItem workItem) {
+        log.info("Fingerprint was successfully validated for: {} - {}", userId, workItem);
+        workItem.getMetaDataMap().put("fingerprinted by " + userId, "true");
     }
 
     @Override
-    public void recordFailure(WorkItem workItem) {
-        log.info("Fingerprint was unable to be validated for: {}", workItem);
-        workItem.getMetaDataMap().put("fingerprinted", "false");
+    public void recordFailure(final String userId, final WorkItem workItem) {
+        log.info("Fingerprint was unable to be validated for: {} - {}", userId, workItem);
+        workItem.getMetaDataMap().put("fingerprinted by " + userId, "false");
     }
 
     private void setFingerprint(final String userId, final String fingerprint, final Workflow workflow) {
@@ -142,7 +142,7 @@ public class FingerprintServiceImpl implements FingerprintService {
         } catch (Exception e) {
             log.error("Error saving fingerprint data");
         } finally {
-            if(adminSession != null) {
+            if (adminSession != null) {
                 adminSession.logout();
             }
         }
